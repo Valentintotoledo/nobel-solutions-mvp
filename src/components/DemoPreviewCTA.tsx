@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react';
 export function DemoPreviewCTA() {
   return (
     <div className="mx-3 mb-3">
-      <div className="rounded-xl bg-neutral-900 p-3 text-white shadow-lg ring-1 ring-neutral-800">
+      <div data-tour="whatsapp-cta" className="rounded-xl bg-neutral-900 p-3 text-white shadow-lg ring-1 ring-neutral-800">
         <div className="flex items-center gap-1.5 mb-2">
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />

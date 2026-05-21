@@ -89,7 +89,7 @@ export function Sidebar({ role, view, onNavigate, onSwitchRole }: SidebarProps) 
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 overflow-y-auto scrollbar-thin">
+      <nav data-tour="sidebar-nav" className="flex-1 px-3 overflow-y-auto scrollbar-thin">
         <ul className="space-y-0.5">
           {items.map((it) => {
             const Icon = it.icon;
@@ -129,6 +129,7 @@ export function Sidebar({ role, view, onNavigate, onSwitchRole }: SidebarProps) 
           <li>
             <button
               onClick={onSwitchRole}
+              data-tour="switch-role"
               className="w-full flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-[#6B7280] hover:text-neutral-900 transition-colors"
             >
               <Repeat className="h-4 w-4" />

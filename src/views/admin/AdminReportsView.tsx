@@ -100,7 +100,7 @@ export function AdminReportsView() {
     <div className="space-y-5 relative">
       <Tabs defaultValue="payroll">
         <div className="flex items-center justify-between gap-3 flex-wrap">
-          <TabsList>
+          <TabsList data-tour="reports-tabs">
             <TabsTrigger value="payroll">Horas & Pagos</TabsTrigger>
             <TabsTrigger value="company">Por Empresa</TabsTrigger>
             <TabsTrigger value="worker">Por Trabajador</TabsTrigger>

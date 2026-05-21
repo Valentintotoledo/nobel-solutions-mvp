@@ -1,12 +1,13 @@
-import { Search, Bell } from 'lucide-react';
+import { Search, Bell, Sparkles } from 'lucide-react';
 
 interface TopBarProps {
   title: string;
   subtitle?: string;
   rightSlot?: React.ReactNode;
+  onStartTour?: () => void;
 }
 
-export function TopBar({ title, subtitle, rightSlot }: TopBarProps) {
+export function TopBar({ title, subtitle, rightSlot, onStartTour }: TopBarProps) {
   return (
     <header className="sticky top-0 z-20 h-14 flex items-center justify-between gap-4 border-b border-neutral-200/80 bg-white/80 backdrop-blur-sm px-6 md:px-10">
       <div className="min-w-0">
@@ -27,6 +28,16 @@ export function TopBar({ title, subtitle, rightSlot }: TopBarProps) {
             ⌘K
           </kbd>
         </div>
+        {onStartTour && (
+          <button
+            onClick={onStartTour}
+            className="hidden sm:flex h-9 items-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-3 text-xs font-semibold text-amber-700 hover:bg-amber-100 transition-colors"
+            title="Reiniciar tour guiado"
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+            Tour
+          </button>
+        )}
         <button className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-neutral-200/80 bg-white text-neutral-600 hover:text-neutral-900 transition-colors">
           <Bell className="h-4 w-4" />
           <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-red-500" />

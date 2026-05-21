@@ -1,10 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BootSplash } from './components/BootSplash';
 import { Login } from './components/Login';
 import { Onboarding } from './components/Onboarding';
 import { Sidebar } from './components/Sidebar';
 import { TopBar } from './components/TopBar';
+import { Tour } from './components/Tour';
+import { ADMIN_TOUR_STEPS } from './lib/tourSteps';
 import type { Role, ViewKey } from './types';
 
 import { AdminDashboardView } from './views/admin/AdminDashboardView';
@@ -19,6 +21,8 @@ import { WorkerOrdersView } from './views/worker/WorkerOrdersView';
 import { WorkerCheckinView } from './views/worker/WorkerCheckinView';
 
 type Stage = 'boot' | 'login' | 'onboarding' | 'app';
+
+const TOUR_STORAGE_KEY = 'nobel.tour.seen';
 
 const DEFAULT_VIEW_BY_ROLE: Record<Role, ViewKey> = {
   admin: 'admin.orders',
@@ -73,6 +77,7 @@ function App() {
   const [stage, setStage] = useState<Stage>('boot');
   const [role, setRole] = useState<Role>('admin');
   const [view, setView] = useState<ViewKey>('admin.orders');
+  const [tourOpen, setTourOpen] = useState(false);
 
   const meta = useMemo(() => PAGE_META[view], [view]);
 
@@ -84,6 +89,34 @@ function App() {
 
   const handleSwitchRole = () => {
     setStage('onboarding');
+  };
+
+  // Auto-open tour the first time the user lands on the app (admin role)
+  useEffect(() => {
+    if (stage !== 'app' || role !== 'admin') return;
+    if (tourOpen) return;
+    const seen = typeof window !== 'undefined' && window.localStorage.getItem(TOUR_STORAGE_KEY);
+    if (seen) return;
+    const t = setTimeout(() => setTourOpen(true), 700);
+    return () => clearTimeout(t);
+  }, [stage, role, tourOpen]);
+
+  const closeTour = () => {
+    setTourOpen(false);
+    try {
+      window.localStorage.setItem(TOUR_STORAGE_KEY, '1');
+    } catch {
+      // ignore (e.g. private mode)
+    }
+  };
+
+  const startTour = () => {
+    // ensure user is in admin role for the tour
+    if (role !== 'admin') {
+      setRole('admin');
+      setView('admin.orders');
+    }
+    setTourOpen(true);
   };
 
   return (
@@ -122,7 +155,11 @@ function App() {
               onSwitchRole={handleSwitchRole}
             />
             <div className="flex-1 min-w-0 flex flex-col">
-              <TopBar title={meta.title} subtitle={meta.subtitle} />
+              <TopBar
+                title={meta.title}
+                subtitle={meta.subtitle}
+                onStartTour={startTour}
+              />
               <main className="flex-1 bg-neutral-50/40">
                 <div className="max-w-[1600px] mx-auto px-6 md:px-10 py-6 md:py-8">
                   <AnimatePresence mode="wait">
@@ -142,6 +179,17 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Guided tour overlay */}
+      {stage === 'app' && (
+        <Tour
+          steps={ADMIN_TOUR_STEPS}
+          open={tourOpen}
+          onClose={closeTour}
+          onNavigate={setView}
+          currentView={view}
+        />
+      )}
     </div>
   );
 }
