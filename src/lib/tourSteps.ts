@@ -52,6 +52,14 @@ export const ADMIN_TOUR_STEPS: TourStep[] = [
     placement: 'bottom',
   },
   {
+    id: 'ai-assistant',
+    title: 'Tu asistente IA · siempre disponible',
+    body:
+      'Acá tenés un asistente que conoce toda tu operación. Le preguntás cualquier cosa en lenguaje natural — "¿quién está disponible hoy?", "asigná la mejor cuadrilla", "resumen del día" — y te responde al instante con datos reales de tu plataforma.',
+    target: 'ai-assistant',
+    placement: 'left',
+  },
+  {
     id: 'cta',
     title: '¿Te gustó lo que ves?',
     body:

@@ -6,6 +6,7 @@ import { Onboarding } from './components/Onboarding';
 import { Sidebar } from './components/Sidebar';
 import { TopBar } from './components/TopBar';
 import { Tour } from './components/Tour';
+import { AIAssistant } from './components/AIAssistant';
 import { ADMIN_TOUR_STEPS } from './lib/tourSteps';
 import type { Role, ViewKey } from './types';
 
@@ -179,6 +180,9 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* AI Assistant floating chat */}
+      {stage === 'app' && <AIAssistant />}
 
       {/* Guided tour overlay */}
       {stage === 'app' && (
