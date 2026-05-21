@@ -23,7 +23,10 @@ import { WorkerCheckinView } from './views/worker/WorkerCheckinView';
 
 type Stage = 'boot' | 'login' | 'onboarding' | 'app';
 
-const TOUR_STORAGE_KEY = 'nobel.tour.seen';
+// Bump this when the tour content changes (adds/removes steps) so existing
+// users see the updated tour once instead of having the old "seen" flag block it.
+const TOUR_VERSION = '2';
+const TOUR_STORAGE_KEY = 'nobel.tour.version';
 
 const DEFAULT_VIEW_BY_ROLE: Record<Role, ViewKey> = {
   admin: 'admin.orders',
@@ -92,12 +95,19 @@ function App() {
     setStage('onboarding');
   };
 
-  // Auto-open tour the first time the user lands on the app (admin role)
+  // Auto-open tour the first time the user lands on the app (admin role).
+  // Reads a version flag from localStorage — when the tour content changes
+  // we bump TOUR_VERSION above and everyone sees the updated tour once.
   useEffect(() => {
     if (stage !== 'app' || role !== 'admin') return;
     if (tourOpen) return;
-    const seen = typeof window !== 'undefined' && window.localStorage.getItem(TOUR_STORAGE_KEY);
-    if (seen) return;
+    let seenVersion: string | null = null;
+    try {
+      seenVersion = window.localStorage.getItem(TOUR_STORAGE_KEY);
+    } catch {
+      // ignore
+    }
+    if (seenVersion === TOUR_VERSION) return;
     const t = setTimeout(() => setTourOpen(true), 700);
     return () => clearTimeout(t);
   }, [stage, role, tourOpen]);
@@ -105,7 +115,7 @@ function App() {
   const closeTour = () => {
     setTourOpen(false);
     try {
-      window.localStorage.setItem(TOUR_STORAGE_KEY, '1');
+      window.localStorage.setItem(TOUR_STORAGE_KEY, TOUR_VERSION);
     } catch {
       // ignore (e.g. private mode)
     }
